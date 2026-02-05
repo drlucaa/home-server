@@ -15,15 +15,15 @@ spec:
     spec:
       containers:
         - name: pihole
-          image: pihole/pihole:latest
+          image: pihole/pihole:2025.11.1
           env:
             - name: TZ
               value: "UTC+1"
-            - name: WEBPASSWORD
+            - name: FTLCONF_webserver_api_password
               valueFrom:
                 secretKeyRef:
                   name: pihole-secret
-                  key: WEBPASSWORD
+                  key: FTLCONF_webserver_api_password
             - name: PIHOLE_DNS_
               value: "1.1.1.1;1.0.0.1"
           ports:
