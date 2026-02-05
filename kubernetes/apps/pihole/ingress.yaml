@@ -5,6 +5,7 @@ metadata:
   namespace: pihole
   annotations:
     kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.middlewares: pihole-redirect-to-admin@kubernetescrd
 spec:
   rules:
     - host: pihole.home

@@ -1,0 +1,10 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-to-admin
+  namespace: pihole
+spec:
+  redirectRegex:
+    regex: ^/$
+    replacement: /admin
+    permanent: true
