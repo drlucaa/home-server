@@ -22,7 +22,3 @@ spec:
     oauth:
       clientId: ""
       clientSecret: ""
-      secret:
-        name: tailscale-auth
-        clientIdKey: client-id
-        clientSecretKey: client-secret
