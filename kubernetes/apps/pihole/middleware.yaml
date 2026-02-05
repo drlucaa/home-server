@@ -5,6 +5,6 @@ metadata:
   namespace: pihole
 spec:
   redirectRegex:
-    regex: ^/$
-    replacement: /admin
+    regex: ^https?://[^/]+/?$
+    replacement: ${1}/admin
     permanent: true
