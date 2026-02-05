@@ -6,7 +6,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.middlewares: pihole-redirect-to-admin@kubernetescrd
+    cert-manager.io/cluster-issuer: ca-issuer
 spec:
+  tls:
+    - hosts:
+        - pihole.home
+      secretName: pihole-tls
   rules:
     - host: pihole.home
       http:
