@@ -5,3 +5,4 @@ resources:
   - secret.yaml
   - repository.yaml
   - release.yaml
+  - api-proxy.yaml
