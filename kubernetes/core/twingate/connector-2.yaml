@@ -1,0 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: twingate-connector-2
+  namespace: twingate
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: connector
+      version: "0.1.x"
+      sourceRef:
+        kind: HelmRepository
+        name: twingate
+  valuesFrom:
+    - kind: Secret
+      name: twingate-secret
+      valuesKey: TWINGATE_NETWORK
+      targetPath: connector.network
+    - kind: Secret
+      name: twingate-secret
+      valuesKey: CONNECTOR_2_ACCESS_TOKEN
+      targetPath: connector.accessToken
+    - kind: Secret
+      name: twingate-secret
+      valuesKey: CONNECTOR_2_REFRESH_TOKEN
+      targetPath: connector.refreshToken
