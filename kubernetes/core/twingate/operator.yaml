@@ -20,18 +20,8 @@ spec:
         name: twingate-secret
         key: TWINGATE_API_KEY
         
-    kubernetes-access-gateway:
-      enabled: true
-      twingate:
-        network: ""
-
   valuesFrom:
     - kind: Secret
       name: twingate-secret
       valuesKey: TWINGATE_NETWORK
       targetPath: twingateOperator.network
-      
-    - kind: Secret
-      name: twingate-secret
-      valuesKey: TWINGATE_NETWORK
-      targetPath: kubernetes-access-gateway.twingate.network
