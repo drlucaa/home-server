@@ -1,0 +1,37 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: twingate-operator
+  namespace: twingate
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: twingate-operator
+      version: "0.1.x"
+      sourceRef:
+        kind: HelmRepository
+        name: twingate
+  values:
+    twingateOperator:
+      remoteNetworkName: "k3d-dev"
+      
+      existingAPIKeySecret:
+        name: twingate-secret
+        key: TWINGATE_API_KEY
+        
+    kubernetes-access-gateway:
+      enabled: true
+      twingate:
+        network: ""
+
+  valuesFrom:
+    - kind: Secret
+      name: twingate-secret
+      valuesKey: TWINGATE_NETWORK
+      targetPath: twingateOperator.network
+      
+    - kind: Secret
+      name: twingate-secret
+      valuesKey: TWINGATE_NETWORK
+      targetPath: kubernetes-access-gateway.twingate.network

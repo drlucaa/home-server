@@ -4,5 +4,6 @@ resources:
   - namespace.yaml
   - repository.yaml
   - secret.yaml
+  - operator.yaml
   - connector-1.yaml
   - connector-2.yaml
