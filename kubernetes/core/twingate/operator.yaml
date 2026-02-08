@@ -14,14 +14,19 @@ spec:
         name: twingate
   values:
     twingateOperator:
-      remoteNetworkName: "k3d-dev"
+      network: trai
+      remoteNetworkName: k3d-dev
       
       existingAPIKeySecret:
         name: twingate-secret
         key: TWINGATE_API_KEY
-        
-  valuesFrom:
-    - kind: Secret
-      name: twingate-secret
-      valuesKey: TWINGATE_NETWORK
-      targetPath: twingateOperator.network
+
+    kubernetes-access-gateway:
+      enabled: true
+      twingate:
+        network: trai
+        resource:
+          enabled: true
+          extraAnnotations:
+            resource.twingate.com/name: "K3d Dev Cluster"
+            resource.twingate.com/alias: "k3d.home"
