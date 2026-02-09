@@ -1,0 +1,4 @@
+resources:
+  - ./twingate
+  - ./cert-issuers
+  - ./aguard
