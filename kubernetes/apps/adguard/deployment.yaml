@@ -63,4 +63,4 @@ spec:
             claimName: adguard-work
         - name: tls-volume
           secret:
-            secretName: aguard-tls
+            secretName: adguard-tls

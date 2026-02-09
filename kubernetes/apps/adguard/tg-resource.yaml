@@ -4,6 +4,6 @@ metadata:
   name: adguard
   namespace: adguard
 spec:
-  name: "AdGuard"
+  name: AdGuard
   address: adguard.adguard.svc.cluster.local
-  alias: adguard.home
+  alias: adguard.trai.ch
