@@ -1,0 +1,12 @@
+apiVersion: twingate.com/v1beta
+kind: TwingateResourceAccess
+metadata:
+  name: adguard
+  namespace: adguard
+spec:
+  resourceRef:
+    name: adguard
+    namespace: adguard
+  principalExternalRef:
+    type: group
+    name: Everyone

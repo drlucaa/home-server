@@ -6,3 +6,4 @@ resources:
   - deployment.yaml
   - service.yaml
   - tg-resource.yaml
+  - tg-access.yaml
