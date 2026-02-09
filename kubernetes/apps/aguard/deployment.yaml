@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard
+  namespace: adguard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguard
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      containers:
+        - name: adguard
+          image: adguard/adguardhome:latest
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 3000
+              name: http-setup
+            - containerPort: 53
+              protocol: UDP
+              name: dns-udp
+            - containerPort: 53
+              protocol: TCP
+              name: dns-tcp
+          env:
+            - name: TZ
+              value: "UTC+1"
+          volumeMounts:
+            - mountPath: /opt/adguardhome/conf
+              name: conf
+            - mountPath: /opt/adguardhome/work
+              name: work
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: conf
+          persistentVolumeClaim:
+            claimName: adguard-conf
+        - name: work
+          persistentVolumeClaim:
+            claimName: adguard-work

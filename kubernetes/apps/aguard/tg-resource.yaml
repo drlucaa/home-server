@@ -1,0 +1,9 @@
+apiVersion: twingate.com/v1beta1
+kind: TwingateResource
+metadata:
+  name: adguard
+  namespace: adguard
+spec:
+  name: "AdGuard"
+  address: adguard.adguard.svc.cluster.local
+  alias: adguard.home
