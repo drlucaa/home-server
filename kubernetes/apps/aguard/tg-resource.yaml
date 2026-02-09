@@ -1,4 +1,4 @@
-apiVersion: twingate.com/v1beta1
+apiVersion: twingate.com/v1beta
 kind: TwingateResource
 metadata:
   name: adguard
