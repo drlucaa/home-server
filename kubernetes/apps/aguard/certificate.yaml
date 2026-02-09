@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: adguard-tls
+  namespace: adguard
+spec:
+  secretName: adguard-tls
+  dnsNames:
+    - adguard.trai.ch
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+    group: cert-manager.io

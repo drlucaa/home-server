@@ -3,5 +3,6 @@ resources:
   - ./pvc.yaml
   - ./deployment.yaml
   - ./service.yaml
+  - ./certificate.yaml
   - ./tg-resource.yaml
   - ./tg-access.yaml
