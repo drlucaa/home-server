@@ -3,4 +3,3 @@ resources:
   - ./repository.yaml
   - ./secret.yaml
   - ./operator.yaml
-  - ./rbac.yaml
