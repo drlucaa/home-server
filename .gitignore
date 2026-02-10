@@ -1,1 +1,8 @@
 .direnv
+
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+.terraformrc
+terraform.rc
