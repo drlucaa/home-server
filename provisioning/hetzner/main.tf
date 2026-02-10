@@ -66,3 +66,12 @@ resource "hcloud_server" "k3s_node" {
     ipv6_enabled = true
   }
 }
+
+# Ansible inventory
+resource "local_file" "ansible_inventory" {
+  content = <<-EOT
+    [k3s_nodes]
+    ${hcloud_server.k3s_node.name} ansible_host=${hcloud_server.k3s_node.ipv4_address} ansible_user=root
+  EOT
+  filename = "${path.module}/../ansible/inventory.ini"
+}

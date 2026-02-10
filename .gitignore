@@ -6,3 +6,5 @@
 crash.log
 .terraformrc
 terraform.rc
+
+provisioning/ansible/inventory.ini
