@@ -22,11 +22,14 @@
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            opentofu
             kubectl
             kubectx
+
+            opentofu
             fluxcd
+
             sops
+            age
 
             nixfmt-tree
             nixfmt
