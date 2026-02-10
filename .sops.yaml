@@ -3,6 +3,6 @@ creation_rules:
     encrypted_regex: "^(data|stringData)$"
     age: >-
       age1r7av906yds64vpcldvd33egjrxyxfhyj2jvutfsxdfw325lf8v3qe7hhgl
-  - path_regex: .*.tfvars
+  - path_regex: .*.env
     age: >-
       age1r7av906yds64vpcldvd33egjrxyxfhyj2jvutfsxdfw325lf8v3qe7hhgl

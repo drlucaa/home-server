@@ -16,5 +16,5 @@ variable "server_type" {
 
 variable "location" {
   description = "Datacenter location"
-  default     = "fsn1"
+  default     = "nbg1"
 }

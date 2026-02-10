@@ -28,6 +28,8 @@
             opentofu
             fluxcd
 
+            minio-client
+
             sops
             age
 
