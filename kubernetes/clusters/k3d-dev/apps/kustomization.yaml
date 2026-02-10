@@ -1,5 +1,4 @@
 resources:
   - ../../../apps/cert-issuers/overlays/k3d-dev
   - ../../../apps/adguard/overlays/k3d-dev
-  - ../../../apps/pihole/overlays/k3d-dev
   - ../../../apps/twingate-connectors/overlays/k3d-dev
