@@ -1,4 +1,0 @@
-resources:
-  - ./twingate
-  - ./cert-issuers
-  - ./adguard
