@@ -1,0 +1,19 @@
+---
+# Who can SSH into these servers?
+# If empty [], SSH is open to the world (0.0.0.0/0) but protected by Fail2Ban/Rate Limiting.
+admin_allowed_cidrs: []
+
+#
+# IMPORTANT: This MUST match the `ip_range` defined in OpenTofu `hcloud_network` resource.
+cluster_allowed_cidrs:
+  - "10.0.0.0/16"
+
+# Network overlay backend.
+# 'vxlan' is standard and low overhead.
+flannel_backend: vxlan
+
+expose_web_ports: false
+
+# High Availability (HA) Mode
+# Set to 'true' ONLY if deploying 3+ Control Plane (Server) nodes.
+k3s_ha_embedded_etcd: false

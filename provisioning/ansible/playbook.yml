@@ -1,6 +1,6 @@
 ---
-- name: Configure K3s Nodes
-  hosts: k3s_nodes
+- name: Configure and harden VPS nodes for K3s
+  hosts: k3s_nodes # Targeting the parent group from your inventory
   gather_facts: yes
   become: yes
 
@@ -14,6 +14,11 @@
       community.general.ufw:
         state: reloaded
 
+    - name: restart ssh
+      service:
+        name: ssh
+        state: restarted
+
   tasks:
     # --- System Updates ---
     - name: Update apt cache and upgrade packages
@@ -22,14 +27,79 @@
         upgrade: dist
       tags: [system]
 
-    # --- Install Security Packages ---
-    - name: Install security packages
+    # --- Base Packages ---
+    - name: Install baseline packages
       apt:
         name:
           - ufw
           - fail2ban
+          - unattended-upgrades
+          - apt-listchanges
+          - chrony
+          - curl
+          - ca-certificates
         state: present
-      tags: [security]
+      tags: [system, security]
+
+    # --- SSH Hardening ---
+    - name: Harden SSH configuration
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^{{ item.key }}\\s+"
+        line: "{{ item.key }} {{ item.val }}"
+        create: no
+        validate: "sshd -t -f %s"
+      loop:
+        - { key: "PermitRootLogin", val: "no" }
+        - { key: "PasswordAuthentication", val: "no" }
+        - { key: "UsePAM", val: "yes" }
+        - { key: "X11Forwarding", val: "no" }
+        - { key: "MaxAuthTries", val: "4" }
+        - { key: "ClientAliveInterval", val: "300" }
+      notify: restart ssh
+      tags: [ssh, security]
+
+    # --- Disable Swap (K3s Requirement) ---
+    - name: Disable swap immediately
+      when: ansible_swaptotal_mb > 0
+      command: swapoff -a
+      changed_when: false
+      tags: [k3s, system]
+
+    - name: Comment out swap entries in /etc/fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^(?!#)(.*\s+swap\s+.*)$'
+        replace: '# \1'
+      tags: [k3s, system]
+
+    # --- Kernel Modules for K8s Networking ---
+    - name: Load kernel modules
+      modprobe:
+        name: "{{ item }}"
+        state: present
+      loop: [overlay, br_netfilter]
+      tags: [k3s, system]
+
+    - name: Persist kernel modules
+      copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          overlay
+          br_netfilter
+      tags: [k3s, system]
+
+    - name: Apply sysctl params for K8s
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+      loop:
+        - { name: "net.ipv4.ip_forward", value: "1" }
+        - { name: "net.bridge.bridge-nf-call-iptables", value: "1" }
+        - { name: "net.bridge.bridge-nf-call-ip6tables", value: "1" }
+      tags: [k3s, system]
 
     # --- UFW Configuration ---
     - name: Set UFW defaults
@@ -41,39 +111,84 @@
         - { direction: outgoing, policy: allow }
       tags: [ufw]
 
-    - name: Allow SSH connections
+    # 1. SSH Access
+    - name: Allow SSH from restricted IPs
+      community.general.ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+        from_ip: "{{ item }}"
+        comment: "SSH admin only"
+      loop: "{{ admin_allowed_cidrs }}"
+      when: admin_allowed_cidrs | length > 0
+      tags: [ufw, ssh]
+
+    - name: Allow SSH with rate limiting (Fallback)
       community.general.ufw:
         rule: limit
         port: "22"
         proto: tcp
         comment: "SSH rate limited"
-      tags: [ufw]
+      when: admin_allowed_cidrs | length == 0
+      tags: [ufw, ssh]
 
-    - name: Allow Kubernetes API
+    # 2. K3s API (Only on Primary/Master)
+    # Using 'k3s_primary' to match your OpenTofu inventory group name
+    - name: Allow K3s API (6443) from Internal Network
       community.general.ufw:
         rule: allow
         port: "6443"
         proto: tcp
-        comment: "K3s API"
-      tags: [ufw]
+        from_ip: "{{ item }}"
+        comment: "K3s API Internal"
+      loop: "{{ cluster_allowed_cidrs }}"
+      when:
+        - "'k3s_primary' in group_names"
+        - cluster_allowed_cidrs | length > 0
+      tags: [ufw, k3s]
 
-    - name: Allow HTTP/HTTPS Traffic
+    # 3. K3s Internal Traffic (VXLAN & Metrics)
+    - name: Allow Flannel VXLAN (8472/udp)
+      community.general.ufw:
+        rule: allow
+        port: "8472"
+        proto: udp
+        from_ip: "{{ item }}"
+        comment: "Flannel VXLAN"
+      loop: "{{ cluster_allowed_cidrs }}"
+      when: cluster_allowed_cidrs | length > 0
+      tags: [ufw, k3s]
+
+    - name: Allow Kubelet Metrics (10250/tcp)
+      community.general.ufw:
+        rule: allow
+        port: "10250"
+        proto: tcp
+        from_ip: "{{ item }}"
+        comment: "Kubelet Metrics"
+      loop: "{{ cluster_allowed_cidrs }}"
+      when: cluster_allowed_cidrs | length > 0
+      tags: [ufw, k3s]
+
+    - name: Allow Ingress (HTTP/HTTPS)
       community.general.ufw:
         rule: allow
         port: "{{ item }}"
         proto: tcp
+        comment: "Ingress"
       loop:
         - "80"
         - "443"
-      tags: [ufw]
+      tags: [ufw, k3s]
 
+    # 4. Enable Firewall
     - name: Enable UFW
       community.general.ufw:
         state: enabled
       tags: [ufw]
 
-    # --- Fail2Ban Configuration ---
-    - name: Configure Fail2Ban jail.local
+    # --- Fail2Ban ---
+    - name: Configure Fail2Ban (jail.local)
       copy:
         dest: /etc/fail2ban/jail.local
         content: |
@@ -81,18 +196,12 @@
           bantime  = 1h
           findtime = 10m
           maxretry = 5
+          banaction = ufw
+          # Whitelist localhost and your Admin/Cluster IPs
+          ignoreip = 127.0.0.1/8 {% if cluster_allowed_cidrs %}{{ cluster_allowed_cidrs | join(' ') }}{% endif %} {% if admin_allowed_cidrs %}{{ admin_allowed_cidrs | join(' ') }}{% endif %}
 
           [sshd]
           enabled = true
           port    = ssh
-          logpath = %(sshd_log)s
-          backend = %(sshd_backend)s
       notify: restart fail2ban
-      tags: [fail2ban]
-
-    - name: Ensure Fail2Ban is running
-      service:
-        name: fail2ban
-        state: started
-        enabled: yes
       tags: [fail2ban]

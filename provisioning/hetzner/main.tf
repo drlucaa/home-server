@@ -78,13 +78,27 @@ resource "hcloud_server" "k3s_node" {
     ipv4_enabled = true
     ipv6_enabled = true
   }
+
+  user_data = <<-EOF
+    #cloud-config
+    users:
+      - name: admin
+        groups: users, sudo
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+        ssh_authorized_keys:
+          - "${hcloud_ssh_key.default.public_key}"
+  
+    disable_root: true
+    ssh_pwauth: false
+  EOF
 }
 
 # Ansible inventory
 resource "local_file" "ansible_inventory" {
   content = <<-EOT
     [k3s_nodes]
-    ${hcloud_server.k3s_node.name} ansible_host=${hcloud_server.k3s_node.ipv4_address} ansible_user=root
+    ${hcloud_server.k3s_node.name} ansible_host=${hcloud_server.k3s_node.ipv4_address} ansible_user=admin
   EOT
   filename = "${path.module}/../ansible/inventory.ini"
 }
