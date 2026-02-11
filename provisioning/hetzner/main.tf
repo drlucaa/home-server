@@ -4,6 +4,11 @@ terraform {
       source  = "hetznercloud/hcloud"
       version = "~> 1.60"
     }
+
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.6"
+    }
   }
 
   backend "s3" {
@@ -115,7 +120,7 @@ resource "hcloud_server" "k3s_node" {
 # Ansible inventory
 resource "local_file" "ansible_inventory" {
   content = <<-EOT
-    [k3s_nodes]
+    [k3s_primary]
     ${hcloud_server.k3s_node.name} ansible_host=${hcloud_server.k3s_node.ipv4_address} ansible_user=admin
   EOT
   filename = "${path.module}/../ansible/inventory.ini"
