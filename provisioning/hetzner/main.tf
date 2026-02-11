@@ -65,6 +65,19 @@ resource "hcloud_firewall" "k3s" {
   # }
 }
 
+# Private Network
+resource "hcloud_network" "k3s" {
+  name     = "k3s-network"
+  ip_range = "10.0.0.0/16"
+}
+
+resource "hcloud_network_subnet" "k3s" {
+  network_id   = hcloud_network.k3s.id
+  type         = "cloud"
+  network_zone = "eu-central"
+  ip_range     = "10.0.1.0/24"
+}
+
 # The VPS Instance
 resource "hcloud_server" "k3s_node" {
   name        = "k3s-server-1"
@@ -77,6 +90,11 @@ resource "hcloud_server" "k3s_node" {
   public_net {
     ipv4_enabled = true
     ipv6_enabled = true
+  }
+
+  network {
+    network_id = hcloud_network.k3s.id
+    ip         = "10.0.1.5" # Explicitly setting a static IP is recommended for servers
   }
 
   user_data = <<-EOF
