@@ -1,0 +1,17 @@
+---
+- name: Harden SSH configuration
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^{{ item.key }}\\s+"
+    line: "{{ item.key }} {{ item.val }}"
+    create: no
+    validate: "sshd -t -f %s"
+  loop:
+    - { key: "PermitRootLogin", val: "no" }
+    - { key: "PasswordAuthentication", val: "no" }
+    - { key: "UsePAM", val: "yes" }
+    - { key: "X11Forwarding", val: "no" }
+    - { key: "MaxAuthTries", val: "4" }
+    - { key: "ClientAliveInterval", val: "300" }
+  notify: restart ssh
+  tags: [ssh, security]

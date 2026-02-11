@@ -1,0 +1,24 @@
+---
+- name: Install Fail2Ban
+  apt:
+    name: fail2ban
+    state: present
+  tags: [fail2ban, security]
+
+- name: Configure Fail2Ban (jail.local)
+  copy:
+    dest: /etc/fail2ban/jail.local
+    content: |
+      [DEFAULT]
+      bantime  = 1h
+      findtime = 10m
+      maxretry = 5
+      banaction = ufw
+      # Whitelist localhost and your Admin/Cluster IPs
+      ignoreip = 127.0.0.1/8 {% if cluster_allowed_cidrs %}{{ cluster_allowed_cidrs | join(' ') }}{% endif %} {% if admin_allowed_cidrs %}{{ admin_allowed_cidrs | join(' ') }}{% endif %}
+
+      [sshd]
+      enabled = true
+      port    = ssh
+  notify: restart fail2ban
+  tags: [fail2ban]
