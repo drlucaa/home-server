@@ -3,17 +3,35 @@
 # If empty [], SSH is open to the world (0.0.0.0/0) but protected by Fail2Ban/Rate Limiting.
 admin_allowed_cidrs: []
 
-#
-# IMPORTANT: This MUST match the `ip_range` defined in OpenTofu `hcloud_network` resource.
+# This MUST match the `ip_range` defined in OpenTofu `hcloud_network` resource.
 cluster_allowed_cidrs:
   - "10.0.0.0/16"
 
-# Network overlay backend.
-# 'vxlan' is standard and low overhead.
-flannel_backend: vxlan
-
-expose_web_ports: false
+# --- K3s Configuration (xanmanning.k3s) ---
+k3s_become: true
+k3s_version: v1.35.0+k3s3
 
 # High Availability (HA) Mode
 # Set to 'true' ONLY if deploying 3+ Control Plane (Server) nodes.
-k3s_ha_embedded_etcd: false
+k3s_etcd_datastore: false
+
+k3s_server:
+  flannel-backend: vxlan
+
+  # TODO: Disable Traefik if to install it via GitOps later (recommended for Flux)
+  # disable:
+  #   - traefik
+  #   - servicelb
+
+  # Security hardening
+  kubelet-arg:
+    - "anonymous-auth=false"
+
+  # Allow access to API from your machine (if using public IP)
+  tls-san:
+    - "apollo.trai.ch"
+    - "{{ ansible_host }}"
+
+k3s_agent:
+  kubelet-arg:
+    - "anonymous-auth=false"

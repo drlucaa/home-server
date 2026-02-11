@@ -1,8 +1,8 @@
 creation_rules:
-  - path_regex: .*.yaml
+  - path_regex: ^(?:kubernetes)(?:/.*)?/[^/]+\.(?:ya?ml)$
     encrypted_regex: "^(data|stringData)$"
-    age: >-
-      age1r7av906yds64vpcldvd33egjrxyxfhyj2jvutfsxdfw325lf8v3qe7hhgl
-  - path_regex: .*.env
-    age: >-
-      age1r7av906yds64vpcldvd33egjrxyxfhyj2jvutfsxdfw325lf8v3qe7hhgl
+    age: age1r7av906yds64vpcldvd33egjrxyxfhyj2jvutfsxdfw325lf8v3qe7hhgl
+  - path_regex: ^(?:provisioning/hetzner)(?:/.*)?/[^/]+\.(?:env)$
+    age: age1r7av906yds64vpcldvd33egjrxyxfhyj2jvutfsxdfw325lf8v3qe7hhgl
+  - path_regex: ^(?:provisioning/ansible)(?:/.*)?/[^/]+\.(?:ya?ml)$
+    age: age1r7av906yds64vpcldvd33egjrxyxfhyj2jvutfsxdfw325lf8v3qe7hhgl

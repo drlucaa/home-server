@@ -41,7 +41,7 @@
     rule: allow
     port: "6443"
     proto: tcp
-    from_ip: "{{ item }}"
+    # from_ip: "{{ item }}"
     comment: "K3s API Internal"
   loop: "{{ cluster_allowed_cidrs }}"
   when:
