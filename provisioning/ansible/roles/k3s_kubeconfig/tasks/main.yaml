@@ -30,7 +30,7 @@
 - name: Merge with existing local kubeconfig
   shell: |
     export KUBECONFIG=~/.kube/config:/tmp/k3s_config_{{ inventory_hostname }}
-    kubectl config view --flatten > ~/.kube/config_merged
+    kubectl config view --merge --flatten > ~/.kube/config_merged
     mv ~/.kube/config_merged ~/.kube/config
     chmod 600 ~/.kube/config
   delegate_to: localhost

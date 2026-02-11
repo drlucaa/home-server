@@ -9,14 +9,17 @@ cluster_allowed_cidrs:
 
 # --- K3s Configuration (xanmanning.k3s) ---
 k3s_become: true
-k3s_version: v1.35.0+k3s3
+k3s_release_version: stable
 
 # High Availability (HA) Mode
-# Set to 'true' ONLY if deploying 3+ Control Plane (Server) nodes.
-k3s_etcd_datastore: false
+k3s_etcd_datastore: true
+
+k3s_registration_address: "{{ hostvars[groups['k3s_primary'][0]]['k3s_node_ip'] }}"
 
 k3s_server:
   flannel-backend: vxlan
+  flannel-iface: ens10
+  node-ip: "{{ k3s_node_ip }}"
 
   # TODO: Disable Traefik if to install it via GitOps later (recommended for Flux)
   # disable:
@@ -31,6 +34,7 @@ k3s_server:
   tls-san:
     - "apollo.trai.ch"
     - "{{ ansible_host }}"
+    - "{{ k3s_node_ip }}"
 
 k3s_agent:
   kubelet-arg:

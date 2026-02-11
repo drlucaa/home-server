@@ -45,7 +45,22 @@
     comment: "K3s API Internal"
   loop: "{{ cluster_allowed_cidrs }}"
   when:
-    - "'k3s_primary' in group_names"
+    - "'k3s_control' in group_names"
+    - cluster_allowed_cidrs | length > 0
+  tags: [ufw, k3s]
+
+- name: Allow etcd (2379-2380) from Internal Network
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    comment: "K3s etcd HA"
+  loop:
+    - "2379"
+    - "2380"
+  when:
+    - "'k3s_control' in group_names"
+    - groups['k3s_control'] | length >= 2
     - cluster_allowed_cidrs | length > 0
   tags: [ufw, k3s]
 
