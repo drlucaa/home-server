@@ -2,3 +2,4 @@ resources:
   - ../../../infra/cert-manager/overlays/k3d-dev
   - ../../../infra/rbac/overlays/k3d-dev
   - ../../../infra/twingate-operator/overlays/k3d-dev
+  - ../../../infra/cnpg-operator/overlays/k3d-dev
