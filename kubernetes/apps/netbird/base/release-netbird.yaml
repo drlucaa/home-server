@@ -1,0 +1,29 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbird
+  namespace: netbird
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: netbird
+      sourceRef:
+        kind: HelmRepository
+        name: jaconi
+        namespace: flux-system
+      # Pin later if you want. For “basic”, let it pick the latest in the repo.
+      # version: "0.13.0"
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+
+  # Keep values empty for the first “it should come up” deployment.
+  # The chart repo README shows port-forwarding services named like:
+  #   service/netbird-management
+  #   service/netbird-signal
+  # which is what we’ll use below for quick testing.
+  values: {}
