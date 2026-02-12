@@ -2,7 +2,8 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/hashicorp/local" {
-  version = "2.6.2"
+  version     = "2.6.2"
+  constraints = "~> 2.6"
   hashes = [
     "h1:9PxkbqNiMxveZTy0xmqyFWjlC268pgAnxj9QsV1jKGk=",
     "zh:157db8450c465fa31b2ede8e9afa13df81eb9c61c7434198865215286c797fba",
