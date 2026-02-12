@@ -1,6 +1,6 @@
 # Cluster Sizing
 server_count = 3
-agent_count  = 2
+agent_count  = 0
 
 # Infrastructure Settings
 location    = "nbg1"
