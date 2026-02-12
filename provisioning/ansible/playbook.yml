@@ -1,18 +1,29 @@
 ---
 - name: Configure and harden VPS nodes for K3s
-  hosts: k3s_nodes
+  hosts: k3s_cluster
   gather_facts: yes
   become: yes
 
   roles:
     - role: base
       tags: base
-    - role: ssh_hardening
-      tags: ssh
+    # - role: ssh_hardening
+    #   tags: ssh
     # - role: firewall
     #   tags: firewall
-    - role: fail2ban
-      tags: fail2ban
+    # - role: fail2ban
+    #   tags: fail2ban
     # - role: k3s_kubeconfig
     #   tags: [kubeconfig, k3s]
     #   when: "'k3s_primary' in group_names"
+
+- name: Deploy K3s Cluster
+  import_playbook: k3s.orchestration.site
+
+- name: Configure local Kubeconfig
+  hosts: server
+  become: no
+  run_once: true
+  roles:
+    - role: kubeconfig
+      tags: [kubeconfig, k3s]

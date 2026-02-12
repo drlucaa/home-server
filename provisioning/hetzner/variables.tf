@@ -35,3 +35,27 @@ variable "location" {
   description = "Datacenter location"
   default     = "nbg1"
 }
+
+variable "subnet_prefix" {
+  description = "The first 3 octets of the private subnet"
+  type        = string
+  default     = "10.0.1"
+}
+
+variable "load_balancer_private_ip" {
+  description = "Private IP for the Load Balancer"
+  type        = string
+  default     = "10.0.1.5"
+}
+
+variable "control_plane_ip_offset" {
+  description = "Starting IP offset for control plane nodes (e.g., .10)"
+  type        = number
+  default     = 10
+}
+
+variable "worker_ip_offset" {
+  description = "Starting IP offset for worker nodes (e.g., .100)"
+  type        = number
+  default     = 100
+}

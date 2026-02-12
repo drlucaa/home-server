@@ -10,7 +10,7 @@ resource "local_file" "ansible_inventory" {
             server.name => {
               ansible_host = server.ipv4_address
               ansible_user = "admin"
-              k3s_node_ip  = "10.0.1.${10 + i}"
+              k3s_node_ip  = tolist(server.network)[0].ip
             }
           }
         }
@@ -21,10 +21,14 @@ resource "local_file" "ansible_inventory" {
             server.name => {
               ansible_host = server.ipv4_address
               ansible_user = "admin"
-              k3s_node_ip  = "10.0.1.${100 + i}"
+              k3s_node_ip  = tolist(server.network)[0].ip
             }
           }
         }
+      }
+      vars = {
+        api_endpoint = hcloud_load_balancer_network.k3s.ip
+        external_api_endpoint = hcloud_load_balancer.k3s.ipv4
       }
     }
   })

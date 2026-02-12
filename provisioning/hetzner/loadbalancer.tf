@@ -4,11 +4,10 @@ resource "hcloud_load_balancer" "k3s" {
   location           = var.location
 }
 
-# Attach LB to the private network
 resource "hcloud_load_balancer_network" "k3s" {
   load_balancer_id = hcloud_load_balancer.k3s.id
   network_id       = hcloud_network.k3s.id
-  ip               = "10.0.1.5"
+  ip               = var.load_balancer_private_ip
 }
 
 resource "hcloud_load_balancer_service" "kube_api" {

@@ -1,0 +1,7 @@
+---
+- name: Replace internal API endpoint with external IP in local kubeconfig
+  replace:
+    path: "~/.kube/config"
+    regexp: "{{ api_endpoint }}"
+    replace: "{{ external_api_endpoint }}"
+  delegate_to: localhost

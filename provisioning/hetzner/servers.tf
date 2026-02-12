@@ -21,7 +21,7 @@ resource "hcloud_server" "control_plane" {
 
   network {
     network_id = hcloud_network.k3s.id
-    ip         = "10.0.1.${10 + count.index}"
+    ip         = "${var.subnet_prefix}.${var.control_plane_ip_offset + count.index}"
   }
 
   user_data = <<-EOF
@@ -55,7 +55,7 @@ resource "hcloud_server" "worker" {
 
   network {
     network_id = hcloud_network.k3s.id
-    ip         = "10.0.1.${100 + count.index}"
+    ip         = "${var.subnet_prefix}.${var.worker_ip_offset + count.index}"
   }
 
   user_data = <<-EOF
