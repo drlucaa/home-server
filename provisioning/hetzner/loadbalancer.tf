@@ -55,22 +55,22 @@ resource "hcloud_load_balancer_service" "https" {
   }
 }
 
-resource "hcloud_load_balancer_target" "worker" {
-  count            = var.worker_count
+resource "hcloud_load_balancer_target" "agent" {
+  count            = var.agent_count
   type             = "server"
   load_balancer_id = hcloud_load_balancer.k3s.id
-  server_id        = hcloud_server.worker[count.index].id
+  server_id        = hcloud_server.agent[count.index].id
   use_private_ip   = true
 
-  depends_on       = [hcloud_load_balancer_network.k3s]
+  depends_on = [hcloud_load_balancer_network.k3s]
 }
 
-resource "hcloud_load_balancer_target" "control_plane" {
-  count            = var.control_plane_count
+resource "hcloud_load_balancer_target" "server" {
+  count            = var.server_count
   type             = "server"
   load_balancer_id = hcloud_load_balancer.k3s.id
-  server_id        = hcloud_server.control_plane[count.index].id
+  server_id        = hcloud_server.server[count.index].id
   use_private_ip   = true
-  
-  depends_on       = [hcloud_load_balancer_network.k3s]
+
+  depends_on = [hcloud_load_balancer_network.k3s]
 }

@@ -3,10 +3,9 @@ resource "local_file" "ansible_inventory" {
   content = yamlencode({
     k3s_cluster = {
       children = {
-        # Control Plane Nodes (Mapped to 'server')
         server = {
           hosts = {
-            for i, server in hcloud_server.control_plane :
+            for i, server in hcloud_server.server :
             server.name => {
               ansible_host = server.ipv4_address
               ansible_user = "admin"
@@ -14,10 +13,9 @@ resource "local_file" "ansible_inventory" {
             }
           }
         }
-        # Worker Nodes (Mapped to 'agent')
         agent = {
           hosts = {
-            for i, server in hcloud_server.worker :
+            for i, server in hcloud_server.agent :
             server.name => {
               ansible_host = server.ipv4_address
               ansible_user = "admin"
@@ -27,7 +25,7 @@ resource "local_file" "ansible_inventory" {
         }
       }
       vars = {
-        api_endpoint = hcloud_load_balancer_network.k3s.ip
+        api_endpoint          = hcloud_load_balancer_network.k3s.ip
         external_api_endpoint = hcloud_load_balancer.k3s.ipv4
       }
     }

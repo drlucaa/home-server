@@ -1,11 +1,11 @@
-output "control_plane_ips" {
-  description = "Public IPv4 addresses of the control plane nodes"
-  value       = hcloud_server.control_plane[*].ipv4_address
+output "server_ips" {
+  description = "Public IPv4 addresses of the server nodes"
+  value       = hcloud_server.server[*].ipv4_address
 }
 
-output "worker_ips" {
-  description = "Public IPv4 addresses of the worker nodes"
-  value       = hcloud_server.worker[*].ipv4_address
+output "agent_ips" {
+  description = "Public IPv4 addresses of the agent nodes"
+  value       = hcloud_server.agent[*].ipv4_address
 }
 
 output "load_balancer_ip" {

@@ -8,27 +8,27 @@ resource "hcloud_ssh_key" "default" {
 resource "hcloud_firewall" "k3s" {
   name = "k3s-firewall"
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "22"
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "22"
     source_ips = ["0.0.0.0/0", "::/0"]
   }
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "6443"
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "6443"
     source_ips = ["0.0.0.0/0", "::/0"]
   }
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "80"
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "80"
     source_ips = ["0.0.0.0/0", "::/0"]
   }
   rule {
-    direction = "in"
-    protocol  = "tcp"
-    port      = "443"
+    direction  = "in"
+    protocol   = "tcp"
+    port       = "443"
     source_ips = ["0.0.0.0/0", "::/0"]
   }
 }

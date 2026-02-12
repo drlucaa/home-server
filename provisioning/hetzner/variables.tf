@@ -9,25 +9,25 @@ variable "ssh_public_key" {
   type        = string
 }
 
-variable "control_plane_count" {
-  description = "Number of control plane nodes"
+variable "server_count" {
+  description = "Number of server (control plane) nodes"
   type        = number
   default     = 1
 }
 
-variable "worker_count" {
-  description = "Number of worker nodes"
+variable "agent_count" {
+  description = "Number of agent (worker) nodes"
   type        = number
   default     = 0
 }
 
 variable "server_type" {
-  description = "Hetzner Server Type for control planes"
+  description = "Hetzner Server Type for servers"
   default     = "cx23"
 }
 
-variable "worker_server_type" {
-  description = "Hetzner Server Type for workers"
+variable "agent_type" {
+  description = "Hetzner Server Type for agents"
   default     = "cx23"
 }
 
@@ -48,14 +48,14 @@ variable "load_balancer_private_ip" {
   default     = "10.0.1.5"
 }
 
-variable "control_plane_ip_offset" {
-  description = "Starting IP offset for control plane nodes (e.g., .10)"
+variable "server_ip_offset" {
+  description = "Starting IP offset for server nodes (e.g., .10)"
   type        = number
   default     = 10
 }
 
-variable "worker_ip_offset" {
-  description = "Starting IP offset for worker nodes (e.g., .100)"
+variable "agent_ip_offset" {
+  description = "Starting IP offset for agent nodes (e.g., .100)"
   type        = number
   default     = 100
 }
