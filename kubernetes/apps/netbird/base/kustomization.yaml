@@ -1,4 +1,5 @@
 resources:
   - namespaces.yaml
+  - secret-relay-auth.yaml
   - repository.yaml
   - release-netbird.yaml
