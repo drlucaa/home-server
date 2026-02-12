@@ -232,29 +232,33 @@ resource "hcloud_load_balancer_target" "worker" {
 
 # --- ANSIBLE INVENTORY ---
 resource "local_file" "ansible_inventory" {
-  content = <<-EOT
-[k3s_primary]
-%{ if length(hcloud_server.control_plane) > 0 ~}
-${hcloud_server.control_plane[0].name} ansible_host=${hcloud_server.control_plane[0].ipv4_address} ansible_user=admin k3s_node_ip=10.0.1.10
-%{ endif ~}
-
-[k3s_secondary]
-%{ for i in range(1, length(hcloud_server.control_plane)) ~}
-${hcloud_server.control_plane[i].name} ansible_host=${hcloud_server.control_plane[i].ipv4_address} ansible_user=admin k3s_node_ip=10.0.1.${10 + i}
-%{ endfor ~}
-
-[k3s_workers]
-%{ for i in range(length(hcloud_server.worker)) ~}
-${hcloud_server.worker[i].name} ansible_host=${hcloud_server.worker[i].ipv4_address} ansible_user=admin k3s_node_ip=10.0.1.${100 + i}
-%{ endfor ~}
-
-[k3s_control:children]
-k3s_primary
-k3s_secondary
-
-[k3s_nodes:children]
-k3s_control
-k3s_workers
-  EOT
-  filename = "${path.module}/../ansible/inventory.ini"
+  content = yamlencode({
+    k3s_cluster = {
+      children = {
+        # Control Plane Nodes (Mapped to 'server')
+        server = {
+          hosts = {
+            for i, server in hcloud_server.control_plane :
+            server.name => {
+              ansible_host = server.ipv4_address
+              ansible_user = "admin"
+              k3s_node_ip  = "10.0.1.${10 + i}"
+            }
+          }
+        }
+        # Worker Nodes (Mapped to 'agent')
+        agent = {
+          hosts = {
+            for i, server in hcloud_server.worker :
+            server.name => {
+              ansible_host = server.ipv4_address
+              ansible_user = "admin"
+              k3s_node_ip  = "10.0.1.${100 + i}"
+            }
+          }
+        }
+      }
+    }
+  })
+  filename = "${path.module}/../ansible/inventory.yaml"
 }
