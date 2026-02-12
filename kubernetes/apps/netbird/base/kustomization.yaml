@@ -1,0 +1,4 @@
+resources:
+  - namespaces.yaml
+  - repository.yaml
+  - release-netbird.yaml
