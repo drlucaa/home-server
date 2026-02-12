@@ -2,3 +2,5 @@ resources:
   - ../../../apps/cert-issuers/overlays/k3d-dev
   - ../../../apps/adguard/overlays/k3d-dev
   - ../../../apps/twingate-connectors/overlays/k3d-dev
+  - ../../../infra/cnpg-operator/overlays/k3d-dev
+  - ../../../apps/postgres-test/overlays/k3d-dev
