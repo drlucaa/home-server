@@ -1,0 +1,2 @@
+resources: ../../../infra/cnpg-operator/overlays/apollo
+  ../../../infra/cert-manager/overlays/apollo
