@@ -1,7 +1,3 @@
 collections:
   - name: community.general
   - name: community.sops
-
-roles:
-  - name: xanmanning.k3s
-    version: v3.6.2

@@ -13,8 +13,6 @@
     #   tags: firewall
     - role: fail2ban
       tags: fail2ban
-    - role: xanmanning.k3s
-      tags: k3s
-    - role: k3s_kubeconfig
-      tags: [kubeconfig, k3s]
-      when: "'k3s_primary' in group_names"
+    # - role: k3s_kubeconfig
+    #   tags: [kubeconfig, k3s]
+    #   when: "'k3s_primary' in group_names"
