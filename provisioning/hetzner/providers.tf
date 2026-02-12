@@ -11,10 +11,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket                      = "traitofustate"
-    key                         = "provisioning/hetzner/terraform.tfstate"
+    bucket                      = "trai-apollo"
+    key                         = "provisioning/apollo/terraform.tfstate"
     region                      = "us-east-1"
-    endpoints                   = { s3 = "https://fsn1.your-objectstorage.com" }
+    endpoints                   = { s3 = "https://nbg1.your-objectstorage.com" }
     skip_credentials_validation = true
     skip_region_validation      = true
     skip_requesting_account_id  = true
