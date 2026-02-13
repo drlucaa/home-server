@@ -44,6 +44,8 @@ spec:
           value: "359848657530454327"
         - name: NETBIRD_MGMT_OIDC_AUDIENCE
           value: "359848657530454327"
+        - name: NETBIRD_MGMT_CORS_ALLOWED_ORIGINS
+          value: "https://netbird.trai.ch"
     signal:
       ingress:
         enabled: true
