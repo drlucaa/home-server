@@ -74,3 +74,28 @@ spec:
           - hosts:
               - relay.netbird.trai.ch
             secretName: netbird-relay-tls
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: netbird-management
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: netbird-management
+              spec:
+                template:
+                  spec:
+                    initContainers:
+                      - name: configure
+                        env:
+                          - name: NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT
+                            value: "https://auth.trai.ch/.well-known/openid-configuration"
+                          - name: NETBIRD_AUTH_AUDIENCE
+                            value: "359848657530454327"
+                          - name: NETBIRD_AUTH_USER_ID_CLAIM
+                            value: "sub"
