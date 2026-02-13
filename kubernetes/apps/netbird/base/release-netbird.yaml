@@ -41,9 +41,9 @@ spec:
         - name: NETBIRD_MGMT_OIDC_ISSUER_ENDPOINT
           value: "https://auth.trai.ch"
         - name: NETBIRD_MGMT_OIDC_CLIENT_ID
-          value: "359848657530454327"
+          value: '"359848657530454327"'
         - name: NETBIRD_MGMT_OIDC_AUDIENCE
-          value: "359848657530454327"
+          value: '"359848657530454327"'
         - name: NETBIRD_MGMT_CORS_ALLOWED_ORIGINS
           value: "https://netbird.trai.ch"
     signal:
