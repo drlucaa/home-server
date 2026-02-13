@@ -23,8 +23,16 @@ spec:
 
   values:
     auth:
-      authority: "https://auth.trai.ch"
-      audience: "359848657530454327"
+      device:
+        provider: hosted
+        authority: "https://auth.trai.ch"
+        clientID: "359848657530454327"
+        audience: "359848657530454327"
+        deviceAuthorizationEndpoint: "https://auth.trai.ch/oauth/v2/device_authorization"
+        tokenEndpoint: "https://auth.trai.ch/oauth/v2/token"
+        scope: "openid profile email offline_access"
+        useIDToken: false
+
     management:
       ingress:
         enabled: true
