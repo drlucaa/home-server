@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: netbird-dashboard
-  namespace: netbird-dashboard
+  namespace: netbird
 spec:
   interval: 10m
   chart:
