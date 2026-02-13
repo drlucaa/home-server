@@ -1,3 +1,4 @@
 resources:
+  - ../../../apps/cert-issuers/overlays/apollo
   - ../../../apps/netbird/overlays/apollo
   - ../../../apps/zitadel/overlays/apollo
