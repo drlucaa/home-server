@@ -22,7 +22,7 @@ spec:
     auth:
       authority: "https://auth.trai.ch"
       clientID: "359848657530454327"
-      audience: "359831162249543991"
+      audience: "359848657530454327"
       supportedScopes: "openid profile email offline_access api"
       userIDClaim: "sub"
     netbird:
