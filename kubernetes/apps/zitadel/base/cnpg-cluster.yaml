@@ -4,13 +4,28 @@ metadata:
   name: zitadel-db
   namespace: zitadel
 spec:
-  instances: 2
+  instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16
   enableSuperuserAccess: true
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 5Gi
+    size: 20Gi
   bootstrap:
     initdb:
       database: zitadel
       owner: zitadel
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://trai-apollo/pg-backup/zitadel"
+      endpointURL: "https://nbg1.your-objectstorage.com"
+      s3Credentials:
+        accessKeyId:
+          name: zitadel-backup-credentials
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: zitadel-backup-credentials
+          key: ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+        maxParallel: 8
+    retentionPolicy: "30d"
