@@ -21,9 +21,57 @@ spec:
     remediation:
       retries: 3
 
-  # Keep values empty for the first “it should come up” deployment.
-  # The chart repo README shows port-forwarding services named like:
-  #   service/netbird-management
-  #   service/netbird-signal
-  # which is what we’ll use below for quick testing.
-  values: {}
+  values:
+    management:
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: api.netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - api.netbird.trai.ch
+            secretName: netbird-management-tls
+
+      env:
+        - name: NETBIRD_MGMT_OIDC_ISSUER
+          value: "https://auth.trai.ch"
+        - name: NETBIRD_MGMT_OIDC_CLIENT_ID
+          value: "359848657530454327"
+        - name: NETBIRD_MGMT_OIDC_AUDIENCE
+          value: "359848657530454327"
+    signal:
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: signal.netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - signal.netbird.trai.ch
+            secretName: netbird-signal-tls
+    relay:
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: relay.netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - relay.netbird.trai.ch
+            secretName: netbird-relay-tls

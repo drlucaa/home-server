@@ -1,0 +1,44 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbird-dashboard
+  namespace: netbird-dashboard
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: netbird-dashboard
+      sourceRef:
+        kind: HelmRepository
+        name: jaconi
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    auth:
+      authority: "https://auth.trai.ch"
+      clientID: "359848657530454327"
+      audience: "359848657530454327"
+      supportedScopes: "openid profile email offline_access api"
+      userIDClaim: "sub"
+    netbird:
+      managementApiEndpoint: "https://api.netbird.trai.ch"
+      managementGrpcApiEndpoint: "https://api.netbird.trai.ch:443"
+    ingress:
+      enabled: true
+      className: "traefik"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-production"
+      hosts:
+        - host: netbird.trai.ch
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - netbird.trai.ch
+          secretName: netbird-dash-tls
