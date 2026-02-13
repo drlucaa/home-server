@@ -3,3 +3,4 @@ resources:
   - secret-relay-auth.yaml
   - repository.yaml
   - release-netbird.yaml
+  - release-dashboard.yaml
