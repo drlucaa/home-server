@@ -5,6 +5,7 @@ metadata:
   namespace: zitadel
 spec:
   instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
   enableSuperuserAccess: true
   primaryUpdateStrategy: unsupervised
   storage:
