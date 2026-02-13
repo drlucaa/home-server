@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: zitadel
-      version: "0.9.x"
+      version: "9.x.x"
       sourceRef:
         kind: HelmRepository
         name: zitadel
