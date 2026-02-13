@@ -24,7 +24,7 @@ spec:
   values:
     auth:
       authority: "https://auth.trai.ch"
-      audience: "359848657530454327"
+      audience: "359831162249543991"
     management:
       ingress:
         enabled: true
