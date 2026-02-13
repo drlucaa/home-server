@@ -28,7 +28,6 @@ spec:
         className: "traefik"
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-production"
-          traefik.ingress.kubernetes.io/router.middlewares: netbird-netbird-cors@kubernetescrd
         hosts:
           api:
             host: api.netbird.trai.ch
