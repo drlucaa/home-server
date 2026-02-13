@@ -29,17 +29,16 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-production"
         hosts:
-          - host: api.netbird.trai.ch
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - api.netbird.trai.ch
-            secretName: netbird-management-tls
-
+          api:
+            host: api.netbird.trai.ch
+            tls:
+              secretName: netbird-management-tls
+          grpc:
+            host: api.netbird.trai.ch
+            tls:
+              secretName: netbird-management-tls
       env:
-        - name: NETBIRD_MGMT_OIDC_ISSUER
+        - name: NETBIRD_MGMT_OIDC_ISSUER_ENDPOINT
           value: "https://auth.trai.ch"
         - name: NETBIRD_MGMT_OIDC_CLIENT_ID
           value: "359848657530454327"
@@ -52,14 +51,10 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-production"
         hosts:
-          - host: signal.netbird.trai.ch
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - signal.netbird.trai.ch
-            secretName: netbird-signal-tls
+          signal:
+            host: signal.netbird.trai.ch
+            tls:
+              secretName: netbird-signal-tls
     relay:
       ingress:
         enabled: true
