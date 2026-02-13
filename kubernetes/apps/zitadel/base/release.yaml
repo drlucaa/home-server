@@ -70,6 +70,8 @@ spec:
           secretKeyRef:
             name: zitadel-db-app
             key: password
+
+    # 1. Main Ingress (API & Console) -> Routes to Service 'zitadel' (port 8080)
     ingress:
       enabled: true
       className: "traefik"
@@ -83,3 +85,19 @@ spec:
         - hosts:
             - "auth.trai.ch"
           secretName: zitadel-tls
+
+    # 2. Login UI Ingress -> Routes to Service 'zitadel-login' (port 3000)
+    login:
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - paths:
+              - path: /ui/v2/login
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "auth.trai.ch"
+            secretName: zitadel-tls
