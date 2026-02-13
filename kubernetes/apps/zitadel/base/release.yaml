@@ -30,7 +30,21 @@ spec:
             User:
               SSL:
                 Mode: "require"
+
+    initJob:
+      command: "zitadel"
+
     env:
+      # --- Superuser (Admin) Credentials ---
+      - name: ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
+        value: "postgres"
+      - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-db-superuser
+            key: password
+
+      # --- Application User Credentials ---
       - name: ZITADEL_DATABASE_POSTGRES_HOST
         valueFrom:
           secretKeyRef:

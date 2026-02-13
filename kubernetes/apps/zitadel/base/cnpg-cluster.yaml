@@ -5,6 +5,7 @@ metadata:
   namespace: zitadel
 spec:
   instances: 2
+  enableSuperuserAccess: true
   primaryUpdateStrategy: unsupervised
   storage:
     size: 5Gi
