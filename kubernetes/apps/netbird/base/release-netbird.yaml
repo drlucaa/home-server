@@ -35,9 +35,9 @@ spec:
             tls:
               secretName: netbird-management-tls
           grpc:
-            host: api.netbird.trai.ch
+            host: grpc.api.netbird.trai.ch
             tls:
-              secretName: netbird-management-tls
+              secretName: netbird-management-grpc-tls
       env:
         - name: NETBIRD_MGMT_OIDC_ISSUER_ENDPOINT
           value: "https://auth.trai.ch"

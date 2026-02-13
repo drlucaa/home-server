@@ -27,7 +27,7 @@ spec:
       userIDClaim: "sub"
     netbird:
       managementApiEndpoint: "https://api.netbird.trai.ch"
-      managementGrpcApiEndpoint: "https://api.netbird.trai.ch:443"
+      managementGrpcApiEndpoint: "https://grpc.api.netbird.trai.ch:443"
     ingress:
       enabled: true
       className: "traefik"
