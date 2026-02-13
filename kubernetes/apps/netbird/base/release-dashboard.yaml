@@ -18,16 +18,33 @@ spec:
   upgrade:
     remediation:
       retries: 3
+
+  valuesFrom:
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: clientId
+      targetPath: auth.clientID
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: audience
+      targetPath: auth.audience
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: authority
+      targetPath: auth.authority
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: managementApiEndpoint
+      targetPath: netbird.managementApiEndpoint
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: managementGrpcApiEndpoint
+      targetPath: netbird.managementGrpcApiEndpoint
+
   values:
     auth:
-      authority: "https://auth.trai.ch"
-      clientID: "359848657530454327"
-      audience: "359848657530454327"
       supportedScopes: "openid profile email offline_access api"
       userIDClaim: "sub"
-    netbird:
-      managementApiEndpoint: "https://api.netbird.trai.ch"
-      managementGrpcApiEndpoint: "https://grpc.api.netbird.trai.ch:443"
     ingress:
       enabled: true
       className: "traefik"

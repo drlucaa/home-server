@@ -12,8 +12,6 @@ spec:
         kind: HelmRepository
         name: jaconi
         namespace: flux-system
-      # Pin later if you want. For “basic”, let it pick the latest in the repo.
-      # version: "0.13.0"
   install:
     remediation:
       retries: 3
@@ -21,15 +19,32 @@ spec:
     remediation:
       retries: 3
 
+  valuesFrom:
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: clientId
+      targetPath: auth.device.clientID
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: audience
+      targetPath: auth.device.audience
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: authority
+      targetPath: auth.device.authority
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: deviceAuthEndpoint
+      targetPath: auth.device.deviceAuthorizationEndpoint
+    - kind: ConfigMap
+      name: netbird-config
+      valuesKey: tokenEndpoint
+      targetPath: auth.device.tokenEndpoint
+
   values:
     auth:
       device:
         provider: hosted
-        authority: "https://auth.trai.ch"
-        clientID: "359848657530454327"
-        audience: "359848657530454327"
-        deviceAuthorizationEndpoint: "https://auth.trai.ch/oauth/v2/device_authorization"
-        tokenEndpoint: "https://auth.trai.ch/oauth/v2/token"
         scope: "openid profile email offline_access"
         useIDToken: false
 
@@ -74,6 +89,8 @@ spec:
           - hosts:
               - relay.netbird.trai.ch
             secretName: netbird-relay-tls
+
+  # Chart doesn't populate these into the configure initContainer, so we patch them in.
   postRenderers:
     - kustomize:
         patches:
@@ -94,8 +111,14 @@ spec:
                       - name: configure
                         env:
                           - name: NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT
-                            value: "https://auth.trai.ch/.well-known/openid-configuration"
-                          - name: NETBIRD_AUTH_AUDIENCE
-                            value: "359848657530454327"
+                            valueFrom:
+                              configMapKeyRef:
+                                name: netbird-config
+                                key: oidcConfigEndpoint
                           - name: NETBIRD_AUTH_USER_ID_CLAIM
                             value: "sub"
+                          - name: NETBIRD_AUTH_AUDIENCE
+                            valueFrom:
+                              configMapKeyRef:
+                                name: netbird-config
+                                key: audience
