@@ -1,0 +1,6 @@
+resources:
+  - namespace.yaml
+  - cnpg-cluster.yaml
+  - repository.yaml
+  - secret-masterkey.yaml
+  - release.yaml

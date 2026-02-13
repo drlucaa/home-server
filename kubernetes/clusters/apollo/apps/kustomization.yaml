@@ -1,2 +1,3 @@
 resources:
   - ../../../apps/netbird/overlays/apollo
+  - ../../../apps/zitadel/overlays/apollo
