@@ -150,9 +150,10 @@ spec:
       env:
         NETBIRD_MGMT_API_ENDPOINT: https://api.netbird.trai.ch:443
         NETBIRD_MGMT_GRPC_API_ENDPOINT: https://grpc.api.netbird.trai.ch:443
+
         AUTH_AUTHORITY: https://auth.trai.ch
-        USE_AUTH0: "false"
-        AUTH_SUPPORTED_SCOPES: "openid profile email offline_access api"
+        USE_AUTH0: false
+        AUTH_SUPPORTED_SCOPES: openid profile email offline_access api groups
         AUTH_REDIRECT_URI: /
         AUTH_SILENT_REDIRECT_URI: /
       envFromSecret:
