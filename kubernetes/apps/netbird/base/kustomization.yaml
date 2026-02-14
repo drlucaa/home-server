@@ -4,4 +4,4 @@ resources:
   - repository.yaml
   - release.yaml
   - ingress.yaml
-  - certficiate.yaml
+  - certificate.yaml
