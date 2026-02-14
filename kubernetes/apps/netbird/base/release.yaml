@@ -158,6 +158,7 @@ spec:
         AUTH_SILENT_REDIRECT_URI: /
       envFromSecret:
         AUTH_CLIENT_ID: netbird-secrets/IDP_CLIENT_ID
+        AUTH_AUDIENCE: netbird-secrets/IDP_CLIENT_ID
       ingress:
         enabled: true
         className: "traefik"
