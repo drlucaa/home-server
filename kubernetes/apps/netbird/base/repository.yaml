@@ -1,8 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: jaconi
+  name: netbird
   namespace: flux-system
 spec:
   interval: 12h
-  url: https://charts.jaconi.io
+  url: https://netbirdio.github.io/helms

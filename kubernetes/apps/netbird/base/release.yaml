@@ -1,0 +1,173 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbird
+  namespace: netbird
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: netbird
+      version: "1.9.0"
+      sourceRef:
+        kind: HelmRepository
+        name: netbird
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    management:
+      image:
+        tag: 0.65.0
+      persistentVolume:
+        enabled: true
+        size: 5Gi
+      envFromSecret:
+        RELAY_PASSWORD: netbird-secrets/RELAY_PASSWORD
+        DATASTORE_ENCRYPTION_KEY: netbird-secrets/DATASTORE_ENCRYPTION_KEY
+        IDP_CLIENT_ID: netbird-secrets/IDP_CLIENT_ID
+
+      configmap: |-
+        {
+          "Relay": {
+            "Addresses": ["rels://relay.netbird.trai.ch:443/relay"],
+            "CredentialsTTL": "24h",
+            "Secret": "{{ .RELAY_PASSWORD }}"
+          },
+          "Signal": {
+            "Proto": "https",
+            "URI": "signal.netbird.trai.ch:443",
+            "Username": "",
+            "Password": ""
+          },
+          "Datadir": "/var/lib/netbird/",
+          "DataStoreEncryptionKey": "{{ .DATASTORE_ENCRYPTION_KEY }}",
+          "HttpConfig": {
+            "AuthIssuer": "https://auth.trai.ch",
+            "AuthAudience": "{{ .IDP_CLIENT_ID }}",
+            "OIDCConfigEndpoint": "https://auth.trai.ch/.well-known/openid-configuration",
+            "AuthKeysLocation": "https://auth.trai.ch/oauth/v2/keys",
+            "AuthUserIDClaim": "sub",
+            "IdpSignKeyRefreshEnabled": true
+          },
+          "DeviceAuthorizationFlow": {
+            "Provider": "hosted",
+            "ProviderConfig": {
+              "ClientID": "{{ .IDP_CLIENT_ID }}",
+              "Domain": "auth.trai.ch",
+              "Audience": "{{ .IDP_CLIENT_ID }}",
+              "TokenEndpoint": "https://auth.trai.ch/oauth/v2/token",
+              "DeviceAuthEndpoint": "https://auth.trai.ch/oauth/v2/device_authorization",
+              "Scope": "openid profile email offline_access",
+              "UseIDToken": false
+            }
+          },
+          "StoreConfig": {
+            "Engine": "sqlite"
+          }
+        }
+
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: api.netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: netbird-management-tls
+            hosts:
+              - api.netbird.trai.ch
+
+      ingressGrpc:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: grpc.api.netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: netbird-management-grpc-tls
+            hosts:
+              - grpc.api.netbird.trai.ch
+
+    signal:
+      image:
+        tag: 0.65.0
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: signal.netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: netbird-signal-tls
+            hosts:
+              - signal.netbird.trai.ch
+
+    relay:
+      image:
+        tag: 0.65.0
+      envFromSecret:
+        NB_AUTH_SECRET: netbird-secrets/RELAY_PASSWORD
+      env:
+        NB_LOG_LEVEL: info
+        NB_LISTEN_ADDRESS: ":33080"
+        NB_EXPOSED_ADDRESS: rels://relay.netbird.trai.ch:443/relay
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: relay.netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: netbird-relay-tls
+            hosts:
+              - relay.netbird.trai.ch
+
+    dashboard:
+      enabled: true
+      image:
+        tag: v2.32.0
+      env:
+        NETBIRD_MGMT_API_ENDPOINT: https://api.netbird.trai.ch:443
+        NETBIRD_MGMT_GRPC_API_ENDPOINT: https://grpc.api.netbird.trai.ch:443
+        AUTH_AUTHORITY: https://auth.trai.ch
+        USE_AUTH0: "false"
+        AUTH_SUPPORTED_SCOPES: "openid profile email offline_access api"
+        AUTH_REDIRECT_URI: /
+        AUTH_SILENT_REDIRECT_URI: /
+      envFromSecret:
+        AUTH_CLIENT_ID: netbird-secrets/IDP_CLIENT_ID
+      ingress:
+        enabled: true
+        className: "traefik"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+        hosts:
+          - host: netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: netbird-dash-tls
+            hosts:
+              - netbird.trai.ch

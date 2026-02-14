@@ -1,7 +1,5 @@
 resources:
-  - namespaces.yaml
-  - secret-relay-auth.yaml
-  - config.yaml
+  - namespace.yaml
+  - secret.yaml
   - repository.yaml
-  - release-netbird.yaml
-  - release-dashboard.yaml
+  - release.yaml
