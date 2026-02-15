@@ -72,15 +72,74 @@ spec:
         }
 
       ingress:
-        enabled: false
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: netbird.trai.ch
+            paths:
+              - path: /api
+                pathType: Prefix
+              - path: /oauth2
+                pathType: Prefix
+              - path: /ws-proxy/management
+                pathType: Prefix
+        tls:
+          - hosts:
+              - netbird.trai.ch
+            secretName: netbird-tls
+
       ingressGrpc:
-        enabled: false
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          traefik.ingress.kubernetes.io/service.serversscheme: h2c
+        hosts:
+          - host: netbird.trai.ch
+            paths:
+              - path: /management.ManagementService/
+                pathType: ImplementationSpecific
+        tls:
+          - hosts:
+              - netbird.trai.ch
+            secretName: netbird-tls
 
     signal:
       image:
         tag: 0.65.0
       ingress:
-        enabled: false
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: netbird.trai.ch
+            paths:
+              - path: /ws-proxy/signal
+                pathType: Prefix
+        tls:
+          - hosts:
+              - netbird.trai.ch
+            secretName: netbird-tls
+
+      # Assuming the chart supports ingressGrpc for Signal (standard structure)
+      ingressGrpc:
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          traefik.ingress.kubernetes.io/service.serversscheme: h2c
+        hosts:
+          - host: netbird.trai.ch
+            paths:
+              - path: /signalexchange.SignalExchange/
+                pathType: ImplementationSpecific
+        tls:
+          - hosts:
+              - netbird.trai.ch
+            secretName: netbird-tls
 
     relay:
       image:
@@ -92,7 +151,19 @@ spec:
         NB_LISTEN_ADDRESS: ":33080"
         NB_EXPOSED_ADDRESS: rels://netbird.trai.ch:443/relay
       ingress:
-        enabled: false
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: netbird.trai.ch
+            paths:
+              - path: /relay
+                pathType: Prefix
+        tls:
+          - hosts:
+              - netbird.trai.ch
+            secretName: netbird-tls
 
     dashboard:
       enabled: true
@@ -111,4 +182,16 @@ spec:
         AUTH_CLIENT_ID: netbird-secrets/IDP_CLIENT_ID
         AUTH_AUDIENCE: netbird-secrets/IDP_CLIENT_ID
       ingress:
-        enabled: false
+        enabled: true
+        className: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: netbird.trai.ch
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - netbird.trai.ch
+            secretName: netbird-tls
