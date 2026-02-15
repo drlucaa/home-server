@@ -1,3 +1,4 @@
 resources:
+  - ../../../infra/external-dns/overlays/apollo
   - ../../../infra/cnpg-operator/overlays/apollo
   - ../../../infra/cert-manager/overlays/apollo

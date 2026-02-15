@@ -30,9 +30,13 @@ spec:
         RELAY_PASSWORD: netbird-secrets/RELAY_PASSWORD
         DATASTORE_ENCRYPTION_KEY: netbird-secrets/DATASTORE_ENCRYPTION_KEY
         IDP_CLIENT_ID: netbird-secrets/IDP_CLIENT_ID
-
+      env:
+        STUN_SERVER_URI: stun:netbird.trai.ch:3478
       configmap: |-
         {
+          "Stuns": [
+            { "Proto": "udp", "URI": "{{ .STUN_SERVER_URI }}" }
+          ],
           "Relay": {
             "Addresses": ["rels://netbird.trai.ch:443/relay"],
             "CredentialsTTL": "24h",
@@ -91,6 +95,9 @@ spec:
         NB_LOG_LEVEL: info
         NB_LISTEN_ADDRESS: ":33080"
         NB_EXPOSED_ADDRESS: rels://netbird.trai.ch:443/relay
+        NB_ENABLE_STUN: "true"
+        NB_STUN_PORTS: "3478"
+
       ingress:
         enabled: false
 

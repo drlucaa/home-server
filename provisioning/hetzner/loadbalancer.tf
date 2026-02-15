@@ -10,6 +10,26 @@ resource "hcloud_load_balancer_network" "k3s" {
   ip               = var.load_balancer_private_ip
 }
 
+resource "hcloud_load_balancer_target" "agent" {
+  count            = var.agent_count
+  type             = "server"
+  load_balancer_id = hcloud_load_balancer.k3s.id
+  server_id        = hcloud_server.agent[count.index].id
+  use_private_ip   = true
+
+  depends_on = [hcloud_load_balancer_network.k3s]
+}
+
+resource "hcloud_load_balancer_target" "server" {
+  count            = var.server_count
+  type             = "server"
+  load_balancer_id = hcloud_load_balancer.k3s.id
+  server_id        = hcloud_server.server[count.index].id
+  use_private_ip   = true
+
+  depends_on = [hcloud_load_balancer_network.k3s]
+}
+
 resource "hcloud_load_balancer_service" "kube_api" {
   load_balancer_id = hcloud_load_balancer.k3s.id
   protocol         = "tcp"
@@ -55,22 +75,17 @@ resource "hcloud_load_balancer_service" "https" {
   }
 }
 
-resource "hcloud_load_balancer_target" "agent" {
-  count            = var.agent_count
-  type             = "server"
+resource "hcloud_load_balancer_service" "stun" {
   load_balancer_id = hcloud_load_balancer.k3s.id
-  server_id        = hcloud_server.agent[count.index].id
-  use_private_ip   = true
-
-  depends_on = [hcloud_load_balancer_network.k3s]
-}
-
-resource "hcloud_load_balancer_target" "server" {
-  count            = var.server_count
-  type             = "server"
-  load_balancer_id = hcloud_load_balancer.k3s.id
-  server_id        = hcloud_server.server[count.index].id
-  use_private_ip   = true
-
-  depends_on = [hcloud_load_balancer_network.k3s]
+  protocol         = "udp"
+  listen_port      = 3478
+  destination_port = 30478
+  
+  health_check {
+    protocol = "tcp"
+    port     = 30478 # Health check usually requires TCP; ensure the pod responds or use a different port if needed
+    interval = 15
+    timeout  = 10
+    retries  = 3
+  }
 }
