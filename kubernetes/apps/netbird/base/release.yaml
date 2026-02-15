@@ -31,6 +31,8 @@ spec:
         DATASTORE_ENCRYPTION_KEY: netbird-secrets/DATASTORE_ENCRYPTION_KEY
         IDP_CLIENT_ID: netbird-secrets/IDP_CLIENT_ID
 
+      grpcContainerPort: 80
+
       configmap: |-
         {
           "Relay": {
@@ -114,6 +116,7 @@ spec:
         className: traefik
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-production
+          traefik.ingress.kubernetes.io/service.serversscheme: h2c
         hosts:
           - host: netbird.trai.ch
             paths:
