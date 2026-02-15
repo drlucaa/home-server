@@ -3,3 +3,5 @@ resources:
   - secret.yaml
   - repository.yaml
   - release.yaml
+  - ingress.yaml
+  - certificate.yaml
